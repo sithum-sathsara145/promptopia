@@ -2,6 +2,10 @@ import React from 'react'
 
 export default function Feed() {
   return (
-    <div>Feed</div>
+    <div>
+      Feed
+                  <div></div>
+    </div>
+
   )
 }

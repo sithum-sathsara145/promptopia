@@ -6,16 +6,17 @@ import Image from "next/image";
 import { signIn, signOut, useSession, getProviders } from "next-auth/react";
 
 export default function Nav() {
-  const isUserLoggedIn = true;
+  const {data : session} = useSession();
   const [providers, setProviders] = useState(null);
   const [toggleDropDown, setToggleDropDown] = useState(false)
   useEffect(() => {
-    const setProviders = async () => {
+    const setUpProviders = async () => {
       const response = await getProviders();
       setProviders(response);
     };
-    setProviders();
+    setUpProviders();
   }, []);
+
   return (
     <nav className=" flex-between w-full mb-16 pt-3">
       <Link href="/" className="flex gap-2 flex-center">
@@ -30,7 +31,7 @@ export default function Nav() {
       </Link>
       {/*Destop navigation */}
       <div className=" sm:flex hidden">
-        {isUserLoggedIn ? (
+        {session?.user ? (
           <div className=" flex gap-3 md:gap-5">
             <Link href="/create-prompt" className=" black_btn">
               Create Post
@@ -40,7 +41,7 @@ export default function Nav() {
             </button>
             <Link href="/profile">
               <Image
-                src="/assets/images/logo.svg"
+                src={session?.user.image}
                 width={37}
                 height={37}
                 className=" rounded-full"
@@ -51,30 +52,32 @@ export default function Nav() {
         ) : (
           <>
             {providers &&
-              Object.values(providers).map((provider) => {
+              Object.values(providers).map((provider) => (
                 <button
-                  type="button"
+                  type='button'
                   key={provider.name}
-                  onClick={() => signIn(provider.id)}
-                  className=" black_btn"
+                  onClick={() => {
+                    signIn(provider.id);
+                  }}
+                  className='black_btn'
                 >
-                  Sign In
-                </button>;
-              })}
+                  Sign in
+                </button>
+              ))}
           </>
         )}
       </div>
       {/*Mobile Navigation */}
       <div className='sm:hidden flex relative'>
-        {isUserLoggedIn ? (
+        {session?.user ? (
           <div className='flex'>
             <Image
-              src='/assets/images/logo.svg'
+              src={session?.user.image}
               width={37}
               height={37}
               className='rounded-full'
               alt='profile'
-              onClick={() => setToggleDropdown(!toggleDropDown)}
+              onClick={() => setToggleDropDown(!toggleDropDown)}
             />
 
             {toggleDropDown && (
@@ -82,21 +85,21 @@ export default function Nav() {
                 <Link
                   href='/profile'
                   className='dropdown_link'
-                  onClick={() => setToggleDropdown(false)}
+                  onClick={() => setToggleDropDown(false)}
                 >
                   My Profile
                 </Link>
                 <Link
                   href='/create-prompt'
                   className='dropdown_link'
-                  onClick={() => setToggleDropdown(false)}
+                  onClick={() => setToggleDropDown(false)}
                 >
                   Create Prompt
                 </Link>
                 <button
                   type='button'
                   onClick={() => {
-                    setToggleDropdown(false);
+                    setToggleDropDown(false);
                     signOut();
                   }}
                   className='mt-5 w-full black_btn'
@@ -106,6 +109,7 @@ export default function Nav() {
               </div>
             )}
           </div>
+          
         ) : (
           <>
             {providers &&

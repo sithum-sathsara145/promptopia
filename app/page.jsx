@@ -1,4 +1,4 @@
-import Feed from '@components/feed'
+import Feed from '@components/Feed'
 import React from 'react'
 
 export default function 

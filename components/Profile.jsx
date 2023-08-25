@@ -20,8 +20,8 @@ export default function Profile({
           <PromptsCard
             key={posts._id}
             post={posts}
-            handleEdit={handleEdit && handleEdit(posts)}
-            handleDelete={handleDelete && handleDelete(posts)}
+            handleEdit={() =>handleEdit && handleEdit(posts)}
+            handleDelete={()=>handleDelete && handleDelete(posts)}
           />
         ))}
       </div>
